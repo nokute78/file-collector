@@ -1,0 +1,11 @@
+{
+    "src":[
+        {"path":"src/hoge.txt",
+         "checksum":"sha1"
+        },
+        {"path":"src/a.txt",
+         "dst_path":"b.txt"
+        }
+    ],
+    "dst": "release/"
+}
