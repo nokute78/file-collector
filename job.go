@@ -25,7 +25,7 @@ import (
 )
 
 type Job struct {
-	Srcs     []*SrcFile `json:"src"`
+	Srcs     []*SrcFile `json:"srcs"`
 	DstDir   string     `json:"dst"`
 	AfterCmd []string   `json:"after_cmd",omitempty`
 }

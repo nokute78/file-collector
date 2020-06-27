@@ -42,7 +42,7 @@ func TestDecodeJson(t *testing.T) {
 	}
 	defer os.Remove(tmpfile.Name())
 
-	input := `{"src":[{"path":"` + tmpfile.Name() + `", "dst_path": "hoge"}],"dst":"dst"}`
+	input := `{"srcs":[{"path":"` + tmpfile.Name() + `", "dst_path": "hoge"}],"dst":"dst"}`
 	err = json.Unmarshal([]byte(input), &job)
 	if err != nil {
 		t.Errorf("normal input:%s", err)

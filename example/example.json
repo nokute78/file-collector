@@ -1,5 +1,5 @@
 {
-    "src":[
+    "srcs":[
         {"path":"src/hoge.txt",
          "checksum":"sha1"
         },
