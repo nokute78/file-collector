@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -221,5 +222,88 @@ func TestSrcCheckConfiguration(t *testing.T) {
 	err = in.CheckConfiguration(tmpdir)
 	if err == nil {
 		t.Errorf("i.Path should not be a absolute path")
+	}
+}
+
+func createTxtFile(t *testing.T, path string) error {
+	t.Helper()
+
+	f, err := os.Create(path)
+	if err != nil {
+		return fmt.Errorf("Create %s", err)
+	}
+	defer f.Close()
+	_, err = f.Write([]byte("test"))
+	if err != nil {
+		return fmt.Errorf("write  %s", err)
+	}
+	return nil
+}
+
+func sameFile(t *testing.T, src string, dst string) (bool, error) {
+	t.Helper()
+	s, err := ioutil.ReadFile(src)
+	if err != nil {
+		return false, err
+	}
+	d, err := ioutil.ReadFile(dst)
+	if err != nil {
+		return false, err
+	}
+
+	ret := bytes.Compare(s, d)
+	if ret != 0 {
+		return false, nil
+	}
+	return true, nil
+}
+
+func TestCopyFile(t *testing.T) {
+	srcdir, err := ioutil.TempDir("", "checkconfiguration")
+	if err != nil {
+		t.Fatalf("TempDir(src):%s", err)
+	}
+	defer os.RemoveAll(srcdir)
+
+	dstdir, err := ioutil.TempDir("", "checkconfiguration")
+	if err != nil {
+		t.Fatalf("TempDir(dst):%s", err)
+	}
+	defer os.RemoveAll(dstdir)
+
+	type testcase struct {
+		name string
+		src  string
+		dst  string
+	}
+
+	cases := []testcase{
+		{"normal", "a.txt", "a.txt"},
+		{"rename", "a.txt", "b.txt"},
+		{"dst sub dir", "a.txt", "src/a.txt"},
+	}
+
+	s := &SrcFile{}
+
+	for _, v := range cases {
+		s.Path = filepath.Join(srcdir, v.src)
+		s.DstPath = filepath.Join(dstdir, v.dst)
+		err := createTxtFile(t, s.Path)
+		if err != nil {
+			t.Errorf("%s: %s", v.name, err)
+			continue
+		}
+
+		err = s.CopyFile()
+		if err != nil {
+			t.Errorf("%s: error %s", v.name, err)
+		}
+
+		ok, err := sameFile(t, s.Path, s.DstPath)
+		if err != nil {
+			t.Errorf("%s: error %s", v.name, err)
+		} else if !ok {
+			t.Errorf("%s: file is not same", v.name)
+		}
 	}
 }
