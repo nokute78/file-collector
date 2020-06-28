@@ -70,6 +70,16 @@ func (i SrcFile) CopyFile() error {
 		return fmt.Errorf("src open:%w", err)
 	}
 	defer src.Close()
+
+	// check if subdir exists.
+	_, err = os.Stat(filepath.Dir(i.DstPath))
+	if os.IsNotExist(err) {
+		err = os.MkdirAll(filepath.Dir(i.DstPath), 0744)
+		if err != nil {
+			return nil
+		}
+	}
+
 	dst, err := os.Create(i.DstPath)
 	if err != nil {
 		return fmt.Errorf("dst create:%w", err)
