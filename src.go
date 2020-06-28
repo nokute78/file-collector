@@ -64,7 +64,7 @@ func IsSubDir(root string, path string) bool {
 	return strings.HasPrefix(absPath, absRoot)
 }
 
-func (i SrcFile) copyFile() error {
+func (i SrcFile) CopyFile() error {
 	src, err := os.Open(i.Path)
 	if err != nil {
 		return fmt.Errorf("src open:%w", err)
@@ -178,7 +178,7 @@ func (i *SrcFile) CopyAndExec(outRoot string) error {
 	}
 
 	// filecopy
-	err = i.copyFile()
+	err = i.CopyFile()
 	if err != nil {
 		return fmt.Errorf("copyFile:%w", err)
 	}
