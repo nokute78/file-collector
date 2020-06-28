@@ -64,13 +64,13 @@ func IsSubDir(root string, path string) bool {
 	return strings.HasPrefix(absPath, absRoot)
 }
 
-func copyFile(dstPath string, srcPath string) error {
-	src, err := os.Open(srcPath)
+func (i SrcFile) copyFile() error {
+	src, err := os.Open(i.Path)
 	if err != nil {
 		return fmt.Errorf("src open:%w", err)
 	}
 	defer src.Close()
-	dst, err := os.Create(dstPath)
+	dst, err := os.Create(i.DstPath)
 	if err != nil {
 		return fmt.Errorf("dst create:%w", err)
 	}
@@ -178,7 +178,7 @@ func (i *SrcFile) CopyAndExec(outRoot string) error {
 	}
 
 	// filecopy
-	err = copyFile(i.DstPath, i.Path)
+	err = i.copyFile()
 	if err != nil {
 		return fmt.Errorf("copyFile:%w", err)
 	}
