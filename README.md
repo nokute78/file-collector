@@ -1,5 +1,9 @@
 # file-collector
 
+## Overview
+
+file-collector collects files , copies them and executes command before/after copying.
+
 ## Usage 
 ```
 file-collector -c config.json
