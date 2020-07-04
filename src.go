@@ -90,11 +90,13 @@ func (i SrcFile) CopyFile() error {
 }
 
 func (i SrcFile) ExecBeforeCmd(out io.Writer, err io.Writer) error {
-	return execCommand(i.Path, i.BeforeCmd, out, err)
+	mp := map[string]string{"${target}": i.Path}
+	return execCommand(mp, i.BeforeCmd, out, err)
 }
 
 func (i SrcFile) ExecAfterCmd(out io.Writer, err io.Writer) error {
-	return execCommand(i.DstPath, i.AfterCmd, out, err)
+	mp := map[string]string{"${target}": i.DstPath}
+	return execCommand(mp, i.AfterCmd, out, err)
 }
 
 func (i SrcFile) Checksum(path string) ([]byte, error) {

@@ -46,10 +46,32 @@ func validateCommandOutput(t *testing.T, buf *bytes.Buffer, expect string) error
 func TestExecCommand(t *testing.T) {
 	buf := bytes.NewBuffer([]byte{})
 
-	src := &SrcFile{Path: "input", DstPath: "output",
-		BeforeCmd: []string{"echo"}, AfterCmd: []string{"echo"}}
+	src := &SrcFile{BeforeCmd: []string{"echo"}, AfterCmd: []string{"echo"}}
 
 	err := src.ExecBeforeCmd(buf, buf)
+	if err != nil {
+		t.Errorf("ExecBeforeCmd:%s", err)
+	}
+	err = validateCommandOutput(t, buf, "\n")
+	if err != nil {
+		t.Errorf("validateCommand(ExecBeforeCmd):%s", err)
+	}
+	buf.Reset()
+
+	err = src.ExecAfterCmd(buf, buf)
+	if err != nil {
+		t.Errorf("ExecAfterCmd:%s", err)
+	}
+	err = validateCommandOutput(t, buf, "\n")
+	if err != nil {
+		t.Errorf("validateCommand(ExecAfterCmd):%s", err)
+	}
+	buf.Reset()
+
+	src = &SrcFile{Path: "input", DstPath: "output",
+		BeforeCmd: []string{"echo", "${target}"}, AfterCmd: []string{"echo", "${target}"}}
+
+	err = src.ExecBeforeCmd(buf, buf)
 	if err != nil {
 		t.Errorf("ExecBeforeCmd:%s", err)
 	}
@@ -69,8 +91,8 @@ func TestExecCommand(t *testing.T) {
 	}
 	buf.Reset()
 
-	src.BeforeCmd = []string{"echo", "file", "is"}
-	src.AfterCmd = []string{"echo", "file", "is"}
+	src.BeforeCmd = []string{"echo", "file", "is", "${target}"}
+	src.AfterCmd = []string{"echo", "file", "is", "${target}"}
 
 	err = src.ExecBeforeCmd(buf, buf)
 	if err != nil {

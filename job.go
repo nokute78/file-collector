@@ -71,7 +71,8 @@ func (j Job) CopyAndExec(cmdout io.Writer, cmderr io.Writer) error {
 	}
 
 	if len(j.AfterCmd) > 1 {
-		err = execCommand("", j.AfterCmd, cmdout, cmderr)
+		mp := make(map[string]string)
+		err = execCommand(mp, j.AfterCmd, cmdout, cmderr)
 		if err != nil {
 			return err
 		}
