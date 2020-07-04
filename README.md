@@ -26,8 +26,8 @@ Configuration File is in JSON format.
 |path|string|File path to copy.|Yes|
 |dst_path|string|Destination path. It should be relative path. The file will be copied under `dst`.|Yes|
 |checksum|string|Generate checksum file. The file name will be `path` + `.` + `checksum`. (e.g. sample.txt.md5) `md5`, `sha1` and `sha256` are supported.|No|
-|before_cmd|string|The command which is executed before copying. If exit code is not 0, cancel copying.|No|
-|after_cmd|string|The command which is executed after copying. If exit code is not 0, cancel copying.|No|
+|before_cmd|string|The command which is executed before copying. If exit code is not 0, cancel copying. `${target}` will be replaced by `path`. |No|
+|after_cmd|string|The command which is executed after copying. If exit code is not 0, cancel copying. `${target}` will be replaced by `dst_path`.|No|
 
 ## License
 
