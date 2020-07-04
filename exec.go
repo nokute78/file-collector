@@ -20,16 +20,26 @@ import (
 	"fmt"
 	"io"
 	"os/exec"
+	"strings"
 )
 
-func execCommand(f string, args []string, outio io.Writer, errio io.Writer) error {
+func execCommand(f map[string]string, args []string, outio io.Writer, errio io.Writer) error {
 	if len(args) < 1 {
 		return fmt.Errorf("command not found")
 	}
+
+	// replace placeholder
+	for k, v := range f {
+		for i, arg := range args {
+			if strings.Compare(k, arg) == 0 {
+				args[i] = v
+			}
+		}
+	}
+
 	var cmd *exec.Cmd
 
-	cmdargs := append(args, f)
-	cmd = exec.Command(cmdargs[0], cmdargs[1:]...)
+	cmd = exec.Command(args[0], args[1:]...)
 	//	fmt.Printf("cmd:%s %s\n", cmdargs[0], cmdargs[1:])
 	if outio != nil {
 		cmd.Stdout = outio
@@ -40,7 +50,7 @@ func execCommand(f string, args []string, outio io.Writer, errio io.Writer) erro
 
 	err := cmd.Run()
 	if err != nil {
-		return fmt.Errorf("%s:%s\n", cmdargs, err)
+		return fmt.Errorf("%s:%s\n", args, err)
 	}
 	return nil
 }
