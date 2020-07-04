@@ -1,5 +1,7 @@
 # file-collector
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/nokute78/file-collector)](https://goreportcard.com/report/github.com/nokute78/file-collector)
+
 ## Overview
 
 file-collector collects files , copies them and executes command before/after copying.
