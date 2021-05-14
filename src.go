@@ -113,7 +113,7 @@ func (i SrcFile) Checksum(path string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	h.Reset()
 	n, err := h.Write(b)
 	if err != nil {
 		return nil, err
