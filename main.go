@@ -25,7 +25,7 @@ import (
 	"os"
 )
 
-const version string = "0.0.2"
+const version string = "0.0.3"
 
 // Exit status
 const (
