@@ -159,6 +159,52 @@ func TestChecksumStr(t *testing.T) {
 	}
 }
 
+func TestChecksumStrTwice(t *testing.T) {
+	type testcase struct {
+		sumType string
+		expect  string
+	}
+	cases := []testcase{
+		{"sha256", "7d1a54127b222502f5b79b5fb0803061152a44f92b37e23c6527baf665d4da9a"},
+		{"sha1", "2fb5e13419fc89246865e7a324f476ec624e8740"},
+		{"md5", "7ac66c0f148de9519b8bd264312c4d64"},
+	}
+
+	f, err := ioutil.TempFile("", "testchecksumstr")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.Remove(f.Name())
+
+	rowstr := "abcdefg"
+	n, err := f.WriteString(rowstr)
+	if err != nil {
+		t.Fatal(err)
+	} else if n < len(rowstr) {
+		t.Fatalf("len(rowstr):%d", n)
+	}
+
+	src := &SrcFile{Path: f.Name()}
+	_, err = src.ChecksumStr(f.Name())
+	if err == nil {
+		t.Error("No error src.ChecksumStr()")
+	}
+
+	for i := 0; i < 2; i++ {
+		for _, v := range cases {
+			src.ChecksumType = v.sumType
+			sumstr, err := src.ChecksumStr(f.Name())
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if sumstr != v.expect {
+				t.Errorf("%s error:\n given =%s\n expect=%s", v.sumType, sumstr, v.expect)
+			}
+		}
+	}
+}
+
 func TestDecodeJSON(t *testing.T) {
 	src := &SrcFile{}
 	err := json.Unmarshal([]byte{}, &src)
